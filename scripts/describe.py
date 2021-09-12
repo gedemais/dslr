@@ -1,6 +1,6 @@
 from sys import stdout, stderr, argv
 import pandas as pd
-from math import sqrt
+import math
 
 usage = "usage: python3 describe.py dataset.csv\n"
 
@@ -73,7 +73,23 @@ def compute_std(column, count, mean):
             continue
         tmp += (f - mean) * (f - mean)
     tmp = tmp / count
-    return sqrt(tmp)
+    return math.sqrt(tmp)
+
+def compute_percentile(column, count, percentile):
+    s = [x for x in column]
+    s.sort()
+
+    k = (count - 1) * float(percentile / 100.0)
+    f = math.floor(k)
+    c = math.ceil(k)
+
+    if f == c:
+        return s[int(k)]
+
+    d0 = s[int(f)] * (c - k)
+    d1 = s[int(c)] * (k - f)
+    return d0+d1
+
 
 def compute_stats(column):
     count = compute_count(column)
@@ -81,12 +97,17 @@ def compute_stats(column):
     std = compute_std(column, count, mean)
     min_val = compute_min(column)
     max_val = compute_max(column)
+    tf_pct = compute_percentile(column, count, 25)
+    fifty_pct = compute_percentile(column, count, 50)
+    sf_pct = compute_percentile(column, count, 75)
 
-    return [count, mean, std, min_val, max_val]
+    return [count, mean, std, min_val, tf_pct, fifty_pct, sf_pct, max_val]
 
 for column in df:
     if df[column].name in stats.keys():
         stats[df[column].name] = compute_stats(df[column])
         print(stats[df[column].name])
+
+describe(stats)
 
 print(df.describe())
