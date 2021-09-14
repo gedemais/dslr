@@ -1,5 +1,6 @@
 from sys import stdout, stderr, argv
 import pandas as pd
+import numpy as np
 import math
 
 usage = "usage: python3 describe.py dataset.csv\n"
@@ -79,21 +80,6 @@ def compute_std(column, count, mean):
     tmp = tmp / count
     return math.sqrt(tmp)
 
-def compute_percentile(column, count, percentile):
-    s = [x for x in column]
-    s.sort()
-
-    k = (count - 1) * float(percentile / 100.0)
-    f = math.floor(k)
-    c = math.ceil(k)
-
-    if f == c:
-        return s[int(k)]
-
-    d0 = s[int(f)] * (c - k)
-    d1 = s[int(c)] * (k - f)
-    return d0+d1
-
 ################################################################################
 
 def get_column_length(stats, matiere):
@@ -138,7 +124,7 @@ def describe(stats):
     for line in lines:
         stdout.write(line)
         if len(line) < padding_offset:
-            stdout.write('o' * (padding_offset - len(line)))
+            stdout.write(' ' * (padding_offset - len(line)))
         print_stat_content(stats, lengths, line)
 
 
@@ -148,9 +134,12 @@ def compute_stats(column):
     std = compute_std(column, count, mean)
     min_val = compute_min(column)
     max_val = compute_max(column)
-    tf_pct = compute_percentile(column, count, 25)
-    fifty_pct = compute_percentile(column, count, 50)
-    sf_pct = compute_percentile(column, count, 75)
+
+    s = [x for x in column]
+    s.sort()
+    tf_pct = s[math.ceil(count / 4.0) - 1]
+    fifty_pct = s[math.ceil(count / 2.0) - 1]
+    sf_pct = s[math.ceil(3 * count / 4.0) - 1]
 
     return {"count": count,
             "mean": mean,
