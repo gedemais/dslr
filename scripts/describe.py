@@ -14,6 +14,8 @@ except:
     print("csv parsing failed.")
     exit(1)
 
+df = df.drop("Index", 1)
+
 stats = {
         "Arithmancy": [],
         "Astronomy": [],
@@ -97,7 +99,7 @@ def compute_percentile(column, count, percentile):
 def get_column_length(stats, matiere):
     max_length = len(matiere)
     for stat in stats[matiere].values():
-        stat_len = len("{:.6f}".format(stat))
+        stat_len = len(format(stat, ".6f"))
         if stat_len > max_length:
             max_length = stat_len
     return max_length
@@ -112,7 +114,15 @@ def print_features_titles(stats, lengths):
         stdout.write(' ' * 2)
     stdout.write('\n')
 
-
+def print_stat_content(stats, lengths, line):
+    for i, matiere in enumerate(stats.keys()):
+        s = format(stats[matiere][line], ".6f")
+        pad = lengths[i] - len(s)
+        if pad > 0:
+            stdout.write(' ' * pad)
+        stdout.write(s)
+        stdout.write(' ' * 2)
+    stdout.write('\n')
 
 def describe(stats):
     lengths = []
@@ -120,15 +130,16 @@ def describe(stats):
         lengths.append(get_column_length(stats, matiere))
 
     print_features_titles(stats, lengths)
-    lines = ["count", "mean", "std", "min", "25%", "50%", "75%", "max"]
+    lines = [
+                "count", "mean", "std", "min",
+                "25%", "50%", "75%", "max"
+            ]
 
     for line in lines:
         stdout.write(line)
         if len(line) < padding_offset:
-            stdout.write(' ' * (padding_offset - len(line)))
-        #for matiere in stats.keys():
-         #   print_stat_content(stats[matiere])
-        stdout.write('\n')
+            stdout.write('o' * (padding_offset - len(line)))
+        print_stat_content(stats, lengths, line)
 
 
 def compute_stats(column):
@@ -144,11 +155,11 @@ def compute_stats(column):
     return {"count": count,
             "mean": mean,
             "std": std,
-            "min_val": min_val,
-            "tf_pct": tf_pct,
-            "fifty_pct": fifty_pct,
-            "sf_pct": sf_pct,
-            "max_val": max_val}
+            "min": min_val,
+            "25%": tf_pct,
+            "50%": fifty_pct,
+            "75%": sf_pct,
+            "max": max_val}
 
 for column in df:
     if df[column].name in stats.keys():
