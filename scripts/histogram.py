@@ -15,3 +15,14 @@ except:
     print("csv parsing failed.")
     exit(1)
 
+df = df.drop("Index", 1)
+df = df.drop("First Name", 1)
+df = df.drop("Last Name", 1)
+df = df.drop("Birthday", 1)
+df = df.drop("Best Hand", 1)
+
+gryffondor = df.loc[df['Hogwarts House'] == 'Gryffindor']
+
+for matiere in gryffondor:
+    s = [x for x in gryffondor[matiere]]
+
