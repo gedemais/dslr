@@ -1,8 +1,17 @@
+from sys import stdout, stderr, argv
+import pandas as pd
 import matplotlib.pyplot as plt
+import math
 
-x = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5]
-plt.hist(x, range = (0, 5), bins = 5, color = 'yellow', edgecolor = 'red')
-plt.xlabel('valeurs')
-plt.ylabel('nombres')
-plt.title('Exemple d\' histogramme simple')
-plt.show()
+usage = "usage: python3 describe.py dataset.csv\n"
+
+if len(argv) != 2:
+    stderr.write(usage)
+    exit(1)
+
+try:
+    df = pd.read_csv(argv[1])
+except:
+    print("csv parsing failed.")
+    exit(1)
+
