@@ -3,88 +3,98 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import math
 
-usage = "usage: python3 describe.py dataset.csv\n"
-
-if len(argv) != 2:
-    stderr.write(usage)
-    exit(1)
-
-try:
-    df = pd.read_csv(argv[1])
-except:
-    print("csv parsing failed.")
-    exit(1)
-
 def compute_count(column):
     count = 0
     for f in column:
-        if pd.isna(f):
-            continue
         count += 1
     return count
+
 
 def compute_mean(column):
     tmp = 0.0
     count = compute_count(column)
     for f in column:
-        if pd.isna(f):
-            continue
         tmp += f
     return tmp / count
 
-df = df.drop("Index", 1)
-df = df.drop("First Name", 1)
-df = df.drop("Last Name", 1)
-df = df.drop("Birthday", 1)
-df = df.drop("Best Hand", 1)
 
-df = df.dropna()
-
-matieres =  {
-            "Arithmancy": {},
-            "Astronomy": {},
-            "Herbology": {},
-            "Defense Against the Dark Arts": {},
-            "Divination": {},
-            "Muggle Studies": {},
-            "Ancient Runes": {},
-            "History of Magic": {},
-            "Transfiguration": {},
-            "Potions": {},
-            "Care of Magical Creatures": {},
-            "Charms": {},
-            "Flying":{}
-            }
+def coords(i, h):
+    return int(i % h), int(i / h)
 
 
-houses =    [
-                "Gryffindor",
-                "Hufflepuff",
-                "Ravenclaw",
-                "Slytherin",
-            ]
+hists_matrix_width = 5
+hists_matrix_height = 3
+n = hists_matrix_width * hists_matrix_height
 
 
-for house in houses:
-    h = df.loc[df['Hogwarts House'] == house]
-    for matiere in matieres.keys():
-        #print("{0}, {1} :".format(house, matiere), h[matiere].values)
-        matieres[matiere][house] = [x for x in h[matiere].values]
+houses = ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"]
 
-w = 5
-h = 3
+houses_colors = {
+                    "Gryffindor" : 'yellow',
+                    "Hufflepuff" : 'orange',
+                    "Ravenclaw" : 'blue',
+                    "Slytherin" : 'green'
+                }
 
-fig, axs = plt.subplots(h, w)
+matieres =      {
+                    "Arithmancy": {},
+                    "Astronomy": {},
+                    "Herbology": {},
+                    "Defense Against the Dark Arts": {},
+                    "Divination": {},
+                    "Muggle Studies": {},
+                    "Ancient Runes": {},
+                    "History of Magic": {},
+                    "Transfiguration": {},
+                    "Potions": {},
+                    "Care of Magical Creatures": {},
+                    "Charms": {},
+                    "Flying":{}
+                }
 
-i = 0
-for matiere in matieres.keys():
-    x = int(i % h)
-    y = int(i / h)
-    axs[x][y].set_title(matiere)
-    axs[x][y].hist(matieres[matiere]['Gryffindor'], bins=25, alpha=1, label='Gry', color='r')
-    axs[x][y].hist(matieres[matiere]['Hufflepuff'], bins=25, alpha=1, label='Huf', color='g')
-    axs[x][y].hist(matieres[matiere]['Ravenclaw'], bins=25, alpha=1, label='Rav', color='b')
-    axs[x][y].hist(matieres[matiere]['Slytherin'], bins=25, alpha=1, label='Sly', color='y')
-    i += 1
 
-plt.show()
+def get_grades(df):
+    for house in houses:
+        h = df.loc[df['Hogwarts House'] == house]
+        for matiere in matieres.keys():
+            matieres[matiere][house] = [x for x in h[matiere].values]
+
+
+def plot_histograms(df):
+    fig, axs = plt.subplots(hists_matrix_height, hists_matrix_width)
+
+    i = 0
+    while i < n:
+        if i >= len(matieres):
+            axs[x][y].axis("off")
+        else:
+            matiere = list(matieres)[i]
+            x, y = coords(i, hists_matrix_height)
+            axs[x][y].set_title(matiere)
+            for house in houses:
+                axs[x][y].hist( matieres[matiere][house],
+                                bins=30, alpha=0.75, color=houses_colors[house])
+        
+        i += 1
+    plt.show()
+
+
+def main():
+    if len(argv) != 2:
+        stderr.write("usage: python3 describe.py dataset.csv\n")
+        exit(1)
+
+    try:
+        df = pd.read_csv(argv[1])
+        df = df.dropna()
+        df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], 1)
+    except:
+        print("csv parsing failed.")
+        exit(1)
+
+    get_grades(df)
+    plot_histograms(df)
+
+
+if __name__ == "__main__":
+    main()
