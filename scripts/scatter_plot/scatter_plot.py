@@ -1,7 +1,11 @@
+from sys import stderr, argv
+from StatsComputor import StatsComputor
+import pandas as pd
+
 
 def main():
     if len(argv) != 2:
-        stderr.write("usage: python3 describe.py dataset.csv\n")
+        stderr.write("usage: python3 scatter_plot.py dataset.csv\n")
         exit(1)
 
     try:

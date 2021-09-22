@@ -77,7 +77,7 @@ def plot_histograms(df):
 
 def main():
     if len(argv) != 2:
-        stderr.write("usage: python3 describe.py dataset.csv\n")
+        stderr.write("usage: python3 histogram.py dataset.csv\n")
         exit(1)
 
     try:
