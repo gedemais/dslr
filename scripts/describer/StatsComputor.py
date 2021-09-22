@@ -38,11 +38,11 @@ class StatsComputor():
 
 
     def __compute_student_stats(self, column):
-        self.__compute_count(column)
-        self.__compute_mean(column)
-        self.__compute_std(column)
-        self.__compute_min(column)
-        self.__compute_max(column)
+        self.compute_count(column)
+        self.compute_mean(column)
+        self.compute_std(column)
+        self.compute_min(column)
+        self.compute_max(column)
 
         s = []
         for i in column:
@@ -65,7 +65,7 @@ class StatsComputor():
                 "max": self.max_val}
 
         
-    def __compute_min(self, column):
+    def compute_min(self, column):
         """ Je tiens a remercier 42 pour m'avoir permis de faire ca."""
         min_val = float('inf')
         for f in column:
@@ -74,7 +74,7 @@ class StatsComputor():
         self.min_val =  min_val
 
 
-    def __compute_max(self, column):
+    def compute_max(self, column):
         """ Toujours plus haut. On vise le sommet."""
         max_val = float('-inf')
         for f in column:
@@ -83,7 +83,7 @@ class StatsComputor():
         self.max_val =  max_val
 
 
-    def __compute_count(self, column):
+    def compute_count(self, column):
         count = 0
         for f in column:
             if pd.isna(f) == False:
@@ -91,7 +91,7 @@ class StatsComputor():
         self.count = count
 
 
-    def __compute_mean(self, column):
+    def compute_mean(self, column):
         tmp = 0.0
         for f in column:
             if pd.isna(f) == False:
@@ -99,7 +99,7 @@ class StatsComputor():
         self.mean =  tmp / self.count
 
 
-    def __compute_std(self, column):
+    def compute_std(self, column):
         tmp = 0.0
         for f in column:
             if pd.isna(f) == False:

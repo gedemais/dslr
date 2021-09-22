@@ -2,24 +2,10 @@ from sys import stderr, argv
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def compute_count(column):
-    count = 0
-    for f in column:
-        if pd.isna(f) == False:
-            count += 1
-    return count
-
-
-def compute_mean(column):
-    tmp = 0.0
-    count = compute_count(column)
-    for f in column:
-        if pd.isna(f) == False:
-            tmp += f
-    return tmp / count
 
 def coords(i, h):
     return int(i % h), int(i / h)
+
 
 # Histograms matrix dimensions
 hists_matrix_width = 5
