@@ -7,10 +7,12 @@ class StatsComputor():
     def __init__(self, csv_path):
         try:
             self.df = pd.read_csv(csv_path)
-            self.df = self.df.drop(["First Name",
+            self.df = self.df.drop(["Index",
+                                    "First Name",
                                     "Last Name",
                                     "Birthday",
-                                    "Best Hand"], 1)
+                                    "Best Hand",
+                                    "Hogwarts House"], 1)
         except:
             stderr.write(csv_path + " : Parsing failed.\n")
             exit(1)
@@ -72,6 +74,7 @@ class StatsComputor():
             if pd.isna(f) == False and f < min_val:
                 min_val = f
         self.min_val =  min_val
+        return min_val
 
 
     def compute_max(self, column):
@@ -81,6 +84,7 @@ class StatsComputor():
             if pd.isna(f) == False and f > max_val:
                 max_val = f
         self.max_val =  max_val
+        return max_val
 
 
     def compute_count(self, column):
