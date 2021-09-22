@@ -7,8 +7,6 @@ class StatsComputor():
     def __init__(self, csv_path):
         try:
             self.df = pd.read_csv(csv_path)
-
-            self.df = self.df.dropna()
             self.df = self.df.drop(["First Name",
                                     "Last Name",
                                     "Birthday",
@@ -71,7 +69,7 @@ class StatsComputor():
         """ Je tiens a remercier 42 pour m'avoir permis de faire ca."""
         min_val = float('inf')
         for f in column:
-            if f < min_val:
+            if pd.isna(f) == False and f < min_val:
                 min_val = f
         self.min_val =  min_val
 
@@ -80,7 +78,7 @@ class StatsComputor():
         """ Toujours plus haut. On vise le sommet."""
         max_val = float('-inf')
         for f in column:
-            if f > max_val:
+            if pd.isna(f) == False and f > max_val:
                 max_val = f
         self.max_val =  max_val
 
@@ -88,20 +86,23 @@ class StatsComputor():
     def __compute_count(self, column):
         count = 0
         for f in column:
-            count += 1
+            if pd.isna(f) == False:
+                count += 1
         self.count = count
 
 
     def __compute_mean(self, column):
         tmp = 0.0
         for f in column:
-            tmp += f
+            if pd.isna(f) == False:
+                tmp += f
         self.mean =  tmp / self.count
 
 
     def __compute_std(self, column):
         tmp = 0.0
         for f in column:
-            tmp += (f - self.mean) * (f - self.mean)
+            if pd.isna(f) == False:
+                tmp += (f - self.mean) * (f - self.mean)
         tmp = tmp / self.count
         self.std =  math.sqrt(tmp)

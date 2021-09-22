@@ -6,7 +6,8 @@ import math
 def compute_count(column):
     count = 0
     for f in column:
-        count += 1
+        if pd.isna(f) == False:
+            count += 1
     return count
 
 
@@ -14,7 +15,8 @@ def compute_mean(column):
     tmp = 0.0
     count = compute_count(column)
     for f in column:
-        tmp += f
+        if pd.isna(f) == False:
+            tmp += f
     return tmp / count
 
 
@@ -55,9 +57,7 @@ matieres =      {
 
 def get_grades(df):
     for house in houses:
-        print(df)
         h = df.loc[df['Hogwarts House'] == house]
-        print(len(h))
         for matiere in matieres.keys():
             matieres[matiere][house] = h[matiere]
 
@@ -73,9 +73,7 @@ def plot_histograms(df):
             matiere = list(matieres)[i]
             x, y = coords(i, hists_matrix_height)
             axs[x][y].set_title(matiere)
-            print(matiere)
             for house in houses:
-                print(house, ' : ', len(matieres[matiere][house]))
                 axs[x][y].hist( matieres[matiere][house],
                                 bins=30, alpha=0.75, color=houses_colors[house])
         
@@ -91,7 +89,6 @@ def main():
     try:
         df = pd.read_csv(argv[1])
         df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], 1)
-        df = df.dropna()
     except:
         print("csv parsing failed.")
         exit(1)
