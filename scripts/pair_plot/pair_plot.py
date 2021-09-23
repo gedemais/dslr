@@ -20,6 +20,12 @@ houses_colors = {
                 }
 
 def plot_scatter_matrix(df):
+    """
+        This function plots all the combination of subjects grades as scatter
+        plots, with differents color points depending on the house.
+        This scatter matrix allows us to see which causalty links will be
+        usefuls for the logistic regression algorithm.
+    """
     fig, axs = plt.subplots(hists_matrix_width, hists_matrix_height)
     for x, a in enumerate(df[1:]):
         for y, b in enumerate(df[1:]):
