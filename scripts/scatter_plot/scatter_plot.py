@@ -74,6 +74,7 @@ def get_highest_similarity(similaritys):
     parts = highest_key.split('-')
     return parts[0], parts[1]
 
+
 def plot_scatter(sc, a_key, b_key):
     """
         This function shows a scatter plot of a and b features content, as x
@@ -81,6 +82,7 @@ def plot_scatter(sc, a_key, b_key):
     """
     plt.scatter(x=sc.df[a_key], y=sc.df[b_key], c='red', s=4)
     plt.show()
+
 
 def main():
     if len(argv) != 2:
@@ -92,6 +94,7 @@ def main():
     matiere_a, matiere_b = get_highest_similarity(similaritys)
     #matiere_a, matiere_b = "Flying", "Charms"
     plot_scatter(sc, matiere_a, matiere_b)
+
 
 if __name__ == "__main__":
     main()
