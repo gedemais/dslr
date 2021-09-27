@@ -19,7 +19,7 @@ class   LRModel():
                         "Charms",
                         "Flying"
                     ]
-    __learning_rate = 0.001
+    __learning_rate = 0.0005
 
     def __init__(self, n_input, target, weights_path=""):
         try:
@@ -32,9 +32,15 @@ class   LRModel():
             exit(1)
 
 
+    def __normalize(self, val, min_val, max_val):
+        return (val - min_val) / (max_val - min_val)
+
+
     def __sigmoid(self, x):
-        print(x)
-        self.output = 1.0 / (1.0 + math.exp(-x))
+        try:
+            self.output = 1.0 / (1.0 + math.exp(-x))
+        except OverflowError:
+            print(-x)
 
 
     def run_model(self, input_data):
@@ -53,35 +59,38 @@ class   LRModel():
         self.__sigmoid(sum_up)
         return self.output
 
+
     def gradient_descent(self, student, target):
         updates = []
-        a = self.output
         for grade in student:
-            dzw = grade
-            daz = a * (1.0 - a)
-            dca = 2.0 * (a - target)
-            pre_ret = dzw * daz
-            updates.append(pre_ret * dca)
+            change = (target - self.output) * self.output * (1.0 - self.output)
+            updates.append(change * self.__learning_rate)
         return updates
 
+
     def train_model(self, df):
-        error = math.inf
-        while error > 0.1:
+        error = float('inf')
+        prev_error = error
+        threshold = 10.0
+        while error > threshold:
+            error = 0.0
             updates = [0.0 for x in range(self.n_input)]
             for student in df.iterrows():
                 house = student[1].values[0]
                 student = student[1].values[1:]
                 target = 1.0 if house == self.target else 0.0
                 self.run_model(student)
-                error = (self.output - target) ** 2.0
+                error += (self.output - target) ** 2.0
                 updates = self.gradient_descent(student, target)
 
             for i, u in enumerate(updates):
                 self.weights[i] += updates[i] * self.__learning_rate
-                #
-                print("Ouput : ", self.output)
-                print("Target : ", target)
-                print("Error : ", error)
-                print('-' * 80)
-                #
+            #
+            print("Error : ", error)
+            print("Delta : ", prev_error - error)
+            prev_error = error
+            print(self.weights)
+            print('-' * 80)
+            #
+        print('__________________\n' * 3)
 
