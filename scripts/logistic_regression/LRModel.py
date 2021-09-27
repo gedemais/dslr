@@ -1,6 +1,8 @@
 from sys import stderr
 import pandas as pd
 import math
+import random
+from StatsComputor import StatsComputor
 
 class   LRModel():
 
@@ -19,12 +21,14 @@ class   LRModel():
                         "Charms",
                         "Flying"
                     ]
-    __learning_rate = 0.0005
+
+    __learning_rate = 0.05
 
     def __init__(self, n_input, target, weights_path=""):
         try:
             self.target = target
             self.weights = [0.0 for x in range(n_input)]
+            self.bias = 0.0
             self.output = 0.0
             self.n_input = n_input
         except:
@@ -37,10 +41,7 @@ class   LRModel():
 
 
     def __sigmoid(self, x):
-        try:
-            self.output = 1.0 / (1.0 + math.exp(-x))
-        except OverflowError:
-            print(-x)
+        self.output = 1.0 / (1.0 + math.exp(-x))
 
 
     def run_model(self, input_data):
@@ -56,41 +57,51 @@ class   LRModel():
             sum_up += input_data[i] * self.weights[i]
             i += 1
 
+        sum_up += self.bias
         self.__sigmoid(sum_up)
         return self.output
-
-
-    def gradient_descent(self, student, target):
-        updates = []
-        for grade in student:
-            change = (target - self.output) * self.output * (1.0 - self.output)
-            updates.append(change * self.__learning_rate)
-        return updates
-
 
     def train_model(self, df):
         error = float('inf')
         prev_error = error
         threshold = 10.0
+        houses = df['Hogwarts House']
+        df=(df-df.mean())/df.std()
         while error > threshold:
             error = 0.0
             updates = [0.0 for x in range(self.n_input)]
-            for student in df.iterrows():
-                house = student[1].values[0]
+            bias_update = 0.0
+            for i, student in enumerate(df.iterrows()):
+                house = houses[i]
                 student = student[1].values[1:]
                 target = 1.0 if house == self.target else 0.0
                 self.run_model(student)
+                if pd.isna(self.output):
+                    continue
                 error += (self.output - target) ** 2.0
-                updates = self.gradient_descent(student, target)
 
-            for i, u in enumerate(updates):
-                self.weights[i] += updates[i] * self.__learning_rate
+                t = (target - self.output) * self.output * (1.0 - self.output)
+
+                bias_update += t
+                isnan = False
+                for i, grade in enumerate(student):
+                    if pd.isna(grade):
+                        isnan = True
+                        break
+                    updates[i] += t * grade
+                if isnan:
+                    continue
+
+            bias_update *= -2.0
+            for i, grade in enumerate(student):
+                updates[i] *= -2.0
+
+            self.bias -= self.__learning_rate * bias_update
+            for i, grade in enumerate(student):
+                self.weights[i] -= self.__learning_rate * updates[i]
+
             #
             print("Error : ", error)
             print("Delta : ", prev_error - error)
             prev_error = error
-            print(self.weights)
-            print('-' * 80)
             #
-        print('__________________\n' * 3)
-

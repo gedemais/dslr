@@ -21,6 +21,7 @@ def main():
     for model_feature in models:
         print("Training model {0}".format(model_feature))
         models[model_feature].train_model(df)
+        print(models[model_feature].weights)
 
 if __name__ == "__main__":
     main()

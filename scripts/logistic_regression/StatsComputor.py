@@ -4,14 +4,17 @@ import math
 
 class StatsComputor():
 
-    def __init__(self, csv_path):
+    def __init__(self, csv_path, df):
         try:
-            self.df = pd.read_csv(csv_path)
-            self.df = self.df.drop(["Index",
-                                    "First Name",
-                                    "Last Name",
-                                    "Birthday",
-                                    "Best Hand"], 1)
+            if csv_path == "":
+                self.df = df
+            else:
+                self.df = pd.read_csv(csv_path)
+                self.df = self.df.drop(["Index",
+                                        "First Name",
+                                        "Last Name",
+                                        "Birthday",
+                                        "Best Hand"], 1)
         except:
             stderr.write(csv_path + " : Parsing failed.\n")
             exit(1)
