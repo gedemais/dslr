@@ -1,4 +1,4 @@
-from sys import stderr
+from sys import stderr, stdout
 import pandas as pd
 import math
 import random
@@ -22,18 +22,32 @@ class   LRModel():
                         "Flying"
                     ]
 
-    __learning_rate = 0.05
+    __learning_rate = 0.03
 
-    def __init__(self, n_input, target, weights_path=""):
+    def __init__(self, n_input, target, max_error=19.0, weights_path=""):
         try:
+            if weights_path == "":
+                self.weights = [0.0 for x in range(n_input)]
+                self.bias = 0.0
+            else:
+                self.weights, self.bias = self.__parse_weights(weights_path)
+
+            self.max_error = max_error
             self.target = target
-            self.weights = [0.0 for x in range(n_input)]
-            self.bias = 0.0
             self.output = 0.0
             self.n_input = n_input
         except:
             stderr.write('Failed to create linear regression model: invalid input/output size\n')
             exit(1)
+
+
+    def __parse_weights(self, weights_path):
+        with open(weights_path, 'r') as f:
+            data = f.read()
+            strs = data.split(',')
+            weights = [float(x) for x in strs[:len(strs) - 1]]
+            bias = float(strs[-1])
+        return weights, bias
 
 
     def __normalize(self, val, min_val, max_val):
@@ -61,13 +75,13 @@ class   LRModel():
         self.__sigmoid(sum_up)
         return self.output
 
+
     def train_model(self, df):
         error = float('inf')
         prev_error = error
-        threshold = 10.0
         houses = df['Hogwarts House']
         df=(df-df.mean())/df.std()
-        while error > threshold:
+        while error > self.max_error:
             error = 0.0
             updates = [0.0 for x in range(self.n_input)]
             bias_update = 0.0
@@ -78,7 +92,7 @@ class   LRModel():
                 self.run_model(student)
                 if pd.isna(self.output):
                     continue
-                error += (self.output - target) ** 2.0
+                error += (target - self.output) ** 2.0
 
                 t = (target - self.output) * self.output * (1.0 - self.output)
 
@@ -101,7 +115,7 @@ class   LRModel():
                 self.weights[i] -= self.__learning_rate * updates[i]
 
             #
-            print("Error : ", error)
-            print("Delta : ", prev_error - error)
+            delta = prev_error - error
+            stdout.write('Error = {0} | Delta = {1}\r'.format(error, delta))
             prev_error = error
             #

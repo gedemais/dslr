@@ -1,14 +1,35 @@
 from LRModel import LRModel
 import pandas as pd
-from sys import argv, stderr
+from sys import argv, stderr, stdout
 from time import sleep
 
 # Something to iterate over...
 models =    {
-                "Gryffindor": LRModel(13, "Gryffindor"),
-                "Hufflepuff": LRModel(13, "Hufflepuff"),
-                "Ravenclaw": LRModel(13, "Ravenclaw")
+                "Gryffindor": LRModel(13, "Gryffindor", 13.1),
+                "Hufflepuff": LRModel(13, "Hufflepuff", 16.3),
+                "Ravenclaw": LRModel(13, "Ravenclaw", 19.05),
+                "Slytherin": LRModel(13, "Slytherin", 11)
             }
+
+weights =   {
+                "Gryffindor": [],
+                "Hufflepuff": [],
+                "Ravenclaw":  [],
+                "Slytherin":  []
+            }
+
+def export_weights(weights, house):
+    path = 'weights/' + house[0] + '_model_weights.txt'
+    n = len(weights)
+    try:
+        with open(path, 'w+') as f:
+            for i, w in enumerate(weights):
+                f.write(str(w))
+                if i < n - 1:
+                    f.write(',')
+    except:
+        stderr.write('Failed to export weights. Abort.')
+        exit(1)
 
 def main():
     if len(argv) != 2:
@@ -19,27 +40,12 @@ def main():
     df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], 1)
 
     for model_feature in models:
+        stdout.write('\n')
         print("Training model {0}".format(model_feature))
         models[model_feature].train_model(df)
-        print(models[model_feature].weights)
+        weights[model_feature] = [x for x in models[model_feature].weights]
+        weights[model_feature].append(models[model_feature].bias)
+        export_weights(weights[model_feature], model_feature)
 
 if __name__ == "__main__":
     main()
-
-#float 	ft_compute_grad(t_env *env, int layer, int i, int j)
-#{
-#	float 	a;
-#	float 	dzw;
-#	float 	daz;
-#	float	dca;
-#	float 	pre_ret;
-#
-#	a = env->nw[layer][i].output;
-#	dzw = env->nw[layer - 1][j].output;
-#	daz = a * (1 - a);
-#	dca = 2 * (a - env->target[i]);
-#	pre_ret = dzw * daz;
-#	if (layer > 1)
-#		env->next_target[i] += (pre_ret * env->nw[layer - 1][j].weights[i]);
-#	return (pre_ret * dca);
-#}
