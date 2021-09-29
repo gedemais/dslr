@@ -1,5 +1,6 @@
 from LRModel import LRModel
 import pandas as pd
+import numpy as np
 from sys import argv, stderr, stdout
 
 models =    {
@@ -16,12 +17,8 @@ models =    {
                 "Ravenclaw": LRModel(   n_input=13,
                                         target="Ravenclaw",
                                         max_error=19.0,
-                                        weights_path='weights/R_model_weights.txt'),
+                                        weights_path='weights/R_model_weights.txt')
 
-                "Slytherin": LRModel(   n_input=13,
-                                        target="Slytherin",
-                                        max_error=12.0,
-                                        weights_path='weights/S_model_weights.txt'),
             }
 
 # Something to iterate over...
@@ -49,6 +46,7 @@ def normalize(val, min_val, max_val):
 def Average(lst):
     return sum(lst) / len(lst)
 
+
 def main():
     if len(argv) != 2:
         stderr.write("usage: python3 logreg_train.py dataset_train.csv\n")
@@ -56,33 +54,36 @@ def main():
 
     df = pd.read_csv(argv[1])
 
+    df_num = df.select_dtypes(include=[np.number])
+
+    df_num = (df_num - df_num.mean()) / df_num.std()
+
+    df[df_num.columns] = df_num
+
     good = 0
     wrong = 0
 
     mean = []
     for student in df.iterrows():
+
         data = []
         for subject in student[1].keys():
             if subject in features:
-                data.append(normalize(student[1][subject], df[subject].min(), df[subject].max()))
-        g = models["Gryffindor"].run_model(data)
-        h = models["Hufflepuff"].run_model(data)
-        r = models["Ravenclaw"].run_model(data)
-        s = models["Slytherin"].run_model(data)
+                data.append(student[1][subject])
 
-        max_val = 0
-        predict = 0
-        for i, score in enumerate([g, h, r, s]):
-            if score > max_val:
-                max_val = score
-                predict = i
+        if models["Gryffindor"].run_model(data) > 0.5:
+            predict = 'Gryffindor'
+        elif models["Hufflepuff"].run_model(data) > 0.5:
+            predict = 'Hufflepuff'
+        elif models["Ravenclaw"].run_model(data) > 0.5:
+            predict = 'Ravenclaw'
+        else:
+            predict = 'Slytherin'
 
-        print(student[1]['Hogwarts House'], ' : ', houses[predict])
-        if student[1]['Hogwarts House'] == houses[predict]:
+        if student[1]['Hogwarts House'] == predict:
             good += 1
         else:
             wrong += 1
-
     print(good, wrong)
 
 
