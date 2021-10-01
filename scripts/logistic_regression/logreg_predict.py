@@ -19,11 +19,6 @@ models =    {
                                         max_error=19.1,
                                         weights_path='weights/R_model_weights.txt'),
 
-                "Slytherin": LRModel(   n_input=13,
-                                        target="Slytherin",
-                                        max_error=11.1,
-                                        weights_path='weights/S_model_weights.txt')
-
             }
 
 # Something to iterate over...
@@ -81,7 +76,7 @@ def main():
             predict = 'Hufflepuff'
         elif models["Ravenclaw"].run_model(data) > 0.9:
             predict = 'Ravenclaw'
-        elif models["Slytherin"].run_model(data) > 0.9:
+        else:
             predict = 'Slytherin'
 
         if student[1]['Hogwarts House'] == predict:

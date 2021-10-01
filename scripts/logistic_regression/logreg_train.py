@@ -6,10 +6,9 @@ from time import sleep
 
 # Something to iterate over...
 models =    {
-                "Gryffindor": LRModel(13, "Gryffindor", 13.1),
-                "Hufflepuff": LRModel(13, "Hufflepuff", 15.1),
-                "Ravenclaw": LRModel(13, "Ravenclaw", 20.05),
-                "Slytherin": LRModel(13, "Slytherin", 11.1)
+                "Gryffindor": LRModel(13, "Gryffindor", 13.2),
+                "Hufflepuff": LRModel(13, "Hufflepuff", 15.01),
+                "Ravenclaw": LRModel(13, "Ravenclaw", 20.01),
             }
 
 weights =   {

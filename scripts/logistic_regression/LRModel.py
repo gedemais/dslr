@@ -77,6 +77,7 @@ class   LRModel():
 
 
     def train_model(self, df):
+        epoch = 0
         error = float('inf')
         prev_error = error
         houses = df['Hogwarts House']
@@ -115,7 +116,8 @@ class   LRModel():
 
             #
             delta = prev_error - error
-            stdout.write('Error = {0} | Delta = {1}\r'.format(error, delta))
+            stdout.write('Error = {0} | Delta = {1} | Epoch {2}\r'.format(error, delta, epoch))
             stdout.flush()
             prev_error = error
+            epoch += 1
             #
