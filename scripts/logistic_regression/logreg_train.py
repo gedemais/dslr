@@ -1,13 +1,14 @@
 from LRModel import LRModel
 import pandas as pd
+import numpy as np
 from sys import argv, stderr, stdout
 from time import sleep
 
 # Something to iterate over...
 models =    {
                 "Gryffindor": LRModel(13, "Gryffindor", 13.1),
-                "Hufflepuff": LRModel(13, "Hufflepuff", 16.5),
-                "Ravenclaw": LRModel(13, "Ravenclaw", 19.1),
+                "Hufflepuff": LRModel(13, "Hufflepuff", 15.1),
+                "Ravenclaw": LRModel(13, "Ravenclaw", 20.05),
                 "Slytherin": LRModel(13, "Slytherin", 11.1)
             }
 
@@ -38,6 +39,13 @@ def main():
 
     df = pd.read_csv(argv[1])
     df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], 1)
+
+    df_num = df.select_dtypes(include=[np.number])
+
+    df_num = (df_num - df_num.mean()) / df_num.std()
+
+    df[df_num.columns] = df_num
+
 
     for model_feature in models:
         stdout.write('\n')

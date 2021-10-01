@@ -22,7 +22,7 @@ class   LRModel():
                         "Flying"
                     ]
 
-    __learning_rate = 0.03
+    __learning_rate = 0.04
 
     def __init__(self, n_input, target, max_error=19.0, weights_path=""):
         try:
@@ -80,7 +80,6 @@ class   LRModel():
         error = float('inf')
         prev_error = error
         houses = df['Hogwarts House']
-        df=(df-df.mean())/df.std()
         while error > self.max_error:
             error = 0.0
             updates = [0.0 for x in range(self.n_input)]
@@ -117,5 +116,6 @@ class   LRModel():
             #
             delta = prev_error - error
             stdout.write('Error = {0} | Delta = {1}\r'.format(error, delta))
+            stdout.flush()
             prev_error = error
             #
