@@ -44,7 +44,7 @@ def plot_scatter_matrix(df):
 
 def main():
     if len(argv) != 2:
-        stderr.write("usage: python3 scatter_plot.py dataset.csv\n")
+        stderr.write("usage: python scatter_plot.py dataset.csv\n")
         exit(1)
 
     sc = StatsComputor(argv[1])

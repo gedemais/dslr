@@ -66,17 +66,21 @@ def gen_prediction_csv(df):
             - df (Pandas DataFrame) : Normalized dataset.
     """
 
-    csv_data =  {'Hogwarts House': []}
+    csv_data =  {
+                    'Index': [],
+                    'Hogwarts House': []
+                }
 
-    for student in df.iterrows():
+    for i, student in enumerate(df.iterrows()):
         data = []
         for subject in student[1].keys():
             if subject in features:
                 data.append(student[1][subject])
 
+        csv_data['Index'].append(i)
         csv_data['Hogwarts House'].append(one_vs_all(data))
 
-    pd.DataFrame(csv_data).to_csv(r'houses.csv')
+    pd.DataFrame(csv_data).to_csv(r'houses.csv', index=False)
     
 
 def main():

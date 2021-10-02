@@ -40,7 +40,7 @@ def export_weights(weights, house):
 
 def main():
     if len(argv) != 2:
-        stderr.write("usage: python3 logreg_train.py dataset_train.csv\n")
+        stderr.write("usage: python logreg_train.py dataset_train.csv\n")
         exit(1)
 
     # Loading and normalization of test dataset
@@ -52,8 +52,7 @@ def main():
 
     # Iteration through models for training
     for model_feature in models:
-        stdout.write('\n')
-        stdout.write("Training model {0}".format(model_feature))
+        stdout.write("\nTraining model {0}\n".format(model_feature))
         models[model_feature].train_model(df)
         # Copying weights and bias
         weights[model_feature] = [x for x in models[model_feature].weights]

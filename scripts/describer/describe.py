@@ -4,7 +4,7 @@ from DatasetDescriber import DatasetDescriber
 def main():
 
     if len(argv) != 2:
-        stderr.write("usage: python3 describe.py dataset.csv\n")
+        stderr.write("usage: python describe.py dataset.csv\n")
         exit(1)
 
     describer = DatasetDescriber(argv[1])

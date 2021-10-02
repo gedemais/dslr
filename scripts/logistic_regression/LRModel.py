@@ -50,10 +50,6 @@ class   LRModel():
         return weights, bias
 
 
-    def __normalize(self, val, min_val, max_val):
-        return (val - min_val) / (max_val - min_val)
-
-
     def __sigmoid(self, x):
         self.output = 1.0 / (1.0 + math.exp(-x))
 
@@ -61,15 +57,13 @@ class   LRModel():
     def run_model(self, input_data):
         if len(input_data) != self.n_input:
             stderr.write('Invalid input data for linear regression model.')
+            exit(1)
 
-        i = 0
         sum_up = 0.0
-        while i < self.n_input:
+        for i in range(self.n_input):
             if pd.isna(input_data[i]):
-                i += 1
                 continue
             sum_up += input_data[i] * self.weights[i]
-            i += 1
 
         sum_up += self.bias
         self.__sigmoid(sum_up)
@@ -116,7 +110,8 @@ class   LRModel():
 
             #
             delta = prev_error - error
-            stdout.write('Error = {0} | Delta = {1} | Epoch {2}\r'.format(error, delta, epoch))
+            stdout.write(   'Error = {0} | Delta = {1} | Epoch {2}           \r'
+                            .format(error, delta, epoch))
             stdout.flush()
             prev_error = error
             epoch += 1
