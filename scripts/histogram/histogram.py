@@ -84,7 +84,7 @@ def main():
         df = pd.read_csv(argv[1])
         df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], 1)
     except:
-        print("csv parsing failed.")
+        print("csv parsing failed. Abort.")
         exit(1)
 
     get_grades(df)

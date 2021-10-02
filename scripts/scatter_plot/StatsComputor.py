@@ -14,7 +14,7 @@ class StatsComputor():
                                     "Best Hand",
                                     "Hogwarts House"], 1)
         except:
-            stderr.write(csv_path + " : Parsing failed.\n")
+            stderr.write(csv_path + " : Parsing failed. Abort.\n")
             exit(1)
 
         self.stats =    {

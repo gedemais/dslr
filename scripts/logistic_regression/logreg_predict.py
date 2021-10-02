@@ -90,10 +90,14 @@ def main():
         exit(1)
 
     # Loading and normalizing the dataset
-    df = pd.read_csv(argv[1])
-    df_num = df.select_dtypes(include=[np.number])
-    df_num = (df_num - df_num.mean()) / df_num.std()
-    df[df_num.columns] = df_num
+    try:
+        df = pd.read_csv(argv[1])
+        df_num = df.select_dtypes(include=[np.number])
+        df_num = (df_num - df_num.mean()) / df_num.std()
+        df[df_num.columns] = df_num
+    except:
+        stderr.write('CSV parsing failed. Abort.')
+        exit(1)
 
     # Generation of houses.csv
     gen_prediction_csv(df)
