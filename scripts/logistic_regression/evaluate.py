@@ -1,7 +1,7 @@
 from LRModel import LRModel
 import pandas as pd
 import numpy as np
-from sys import argv, stderr, stdout
+from sys import argv, stderr
 from time import sleep
 
 
@@ -34,9 +34,10 @@ def main():
 
     # Compute precision score and display it.
     precision = float(rights) / float(len(df_houses))
-    buff = "\n-------------------\n"
-    buff += "Precision = {0} / {1} == {2}\n".format(rights, len(df_houses), precision)
-    stdout.write(buff)
+
+    print(  "Precision score = {0} / {1} == {2}"
+            .format(rights, len(df_houses), precision))
+
 
 if __name__ == "__main__":
     main()
