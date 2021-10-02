@@ -3,20 +3,18 @@ import pandas as pd
 import numpy as np
 from sys import argv, stderr, stdout
 
+# Prediction models generated with weights files contents
 models =    {
                 "Gryffindor": LRModel(  n_input=13,
                                         target="Gryffindor",
-                                        max_error=13.1,
                                         weights_path='weights/G_model_weights.txt'),
 
                 "Hufflepuff": LRModel(  n_input=13,
                                         target="Hufflepuff",
-                                        max_error=16.5,
                                         weights_path='weights/H_model_weights.txt'),
 
                 "Ravenclaw": LRModel(   n_input=13,
                                         target="Ravenclaw",
-                                        max_error=19.1,
                                         weights_path='weights/R_model_weights.txt'),
 
             }
@@ -24,6 +22,7 @@ models =    {
 # Something to iterate over...
 houses = ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"]
 
+# Dataset features taken into account
 features =  [
                         "Arithmancy",
                         "Astronomy",
@@ -40,52 +39,60 @@ features =  [
                         "Flying"
                     ]
 
-def normalize(val, min_val, max_val):
-    return (val - min_val) / (max_val - min_val)
 
-def Average(lst):
-    return sum(lst) / len(lst)
+def one_vs_all(data):
+    """
+        This function is the one-vs-all algorithm implementation. It iterates
+        through the models results to spot the first positive prediction,
+        resolving our multi-binary classification problem, allowing us to deliver
+        a pertinent classification.
+        Parameters:
+            - data (list) : Input data for binary prediction models.
+                            (Features of one student in the dataset)
+    """
 
-def main():
-    if len(argv) != 2:
-        stderr.write("usage: python3 logreg_train.py dataset_train.csv\n")
-        exit(1)
+    for house in houses[:len(houses) - 1]:
+        if models[house].run_model(data) > 0.9:
+            return house
+    return houses[-1]
 
-    df = pd.read_csv(argv[1])
 
-    df_num = df.select_dtypes(include=[np.number])
+def gen_prediction_csv(df):
+    """
+        This function iterates through the whole dataset to predict a house
+        classification for each student. Then it exports the results of thoses
+        predictions into a file named houses.csv.
+        Parameters:
+            - df (Pandas DataFrame) : Normalized dataset.
+    """
 
-    df_num = (df_num - df_num.mean()) / df_num.std()
+    csv_data =  {'Hogwarts House': []}
 
-    df[df_num.columns] = df_num
-
-    good = 0
-    wrong = 0
-
-    mean = []
     for student in df.iterrows():
-
         data = []
         for subject in student[1].keys():
             if subject in features:
                 data.append(student[1][subject])
 
-        if models["Gryffindor"].run_model(data) > 0.9:
-            predict = 'Gryffindor'
-        elif models["Hufflepuff"].run_model(data) > 0.9:
-            predict = 'Hufflepuff'
-        elif models["Ravenclaw"].run_model(data) > 0.9:
-            predict = 'Ravenclaw'
-        else:
-            predict = 'Slytherin'
+        csv_data['Hogwarts House'].append(one_vs_all(data))
 
-        if student[1]['Hogwarts House'] == predict:
-            good += 1
-        else:
-            print(student[1]['Hogwarts House'], predict)
-            wrong += 1
-    print(good, wrong)
+    pd.DataFrame(csv_data).to_csv(r'houses.csv')
+    
 
+def main():
+    # Parameters check
+    if len(argv) != 2:
+        stderr.write("usage: python logreg_predict.py dataset_test.csv\n")
+        exit(1)
+
+    # Loading and normalizing the dataset
+    df = pd.read_csv(argv[1])
+    df_num = df.select_dtypes(include=[np.number])
+    df_num = (df_num - df_num.mean()) / df_num.std()
+    df[df_num.columns] = df_num
+
+    # Generation of houses.csv
+    gen_prediction_csv(df)
 
 if __name__ == "__main__":
     main()
