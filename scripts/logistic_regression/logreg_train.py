@@ -2,7 +2,6 @@ from LRModel import LRModel
 import pandas as pd
 import numpy as np
 from sys import argv, stderr, stdout
-from time import sleep
 
 # Something to iterate over...
 models =    {
@@ -11,14 +10,21 @@ models =    {
                 "Ravenclaw": LRModel(13, "Ravenclaw", 20.01),
             }
 
+# Weights storage
 weights =   {
                 "Gryffindor": [],
                 "Hufflepuff": [],
                 "Ravenclaw":  [],
-                "Slytherin":  []
             }
 
 def export_weights(weights, house):
+    """
+        This function exports the weights of a trained classification model,
+        identified by its house prediction name.
+        Parameters:
+            - weights (float array) : Weights and bias array.
+            - house (str) : Model identifier.
+    """
     path = 'weights/' + house[0] + '_model_weights.txt'
     n = len(weights)
     try:
@@ -31,28 +37,30 @@ def export_weights(weights, house):
         stderr.write('Failed to export weights. Abort.')
         exit(1)
 
+
 def main():
     if len(argv) != 2:
         stderr.write("usage: python3 logreg_train.py dataset_train.csv\n")
         exit(1)
 
+    # Loading and normalization of test dataset
     df = pd.read_csv(argv[1])
     df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], 1)
-
     df_num = df.select_dtypes(include=[np.number])
-
     df_num = (df_num - df_num.mean()) / df_num.std()
-
     df[df_num.columns] = df_num
 
-
+    # Iteration through models for training
     for model_feature in models:
         stdout.write('\n')
-        print("Training model {0}".format(model_feature))
+        stdout.write("Training model {0}".format(model_feature))
         models[model_feature].train_model(df)
+        # Copying weights and bias
         weights[model_feature] = [x for x in models[model_feature].weights]
         weights[model_feature].append(models[model_feature].bias)
+        # Exporting them
         export_weights(weights[model_feature], model_feature)
+
 
 if __name__ == "__main__":
     main()
