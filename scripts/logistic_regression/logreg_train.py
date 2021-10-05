@@ -2,6 +2,7 @@ from LRModel import LRModel
 import pandas as pd
 import numpy as np
 from sys import argv, stderr, stdout
+import os
 
 # Something to iterate over...
 models =    {
@@ -27,6 +28,12 @@ def export_weights(weights, house):
     """
     path = 'weights/' + house[0] + '_model_weights.txt'
     n = len(weights)
+
+    try:
+        os.mkdir('weights/')
+    except FileExistsError:
+        pass
+
     try:
         with open(path, 'w+') as f:
             for i, w in enumerate(weights):

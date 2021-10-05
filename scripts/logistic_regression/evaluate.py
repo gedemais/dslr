@@ -27,7 +27,7 @@ def main():
     wrongs = 0
     # Iterating through the datasets to count rights and wrongs classifications.
     for i in range(len(df_houses)):
-        if df_houses.values[i][0] == df_truth.values[i][1]:
+        if df_houses.values[i][1] == df_truth.values[i][1]:
             rights += 1
         else:
             wrongs += 1
