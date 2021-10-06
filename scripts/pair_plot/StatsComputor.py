@@ -11,7 +11,7 @@ class StatsComputor():
                                     "First Name",
                                     "Last Name",
                                     "Birthday",
-                                    "Best Hand"], 1)
+                                    "Best Hand"], axis=1)
         except:
             stderr.write(csv_path + " : Parsing failed. Abort.\n")
             exit(1)

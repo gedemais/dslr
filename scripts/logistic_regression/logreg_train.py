@@ -53,9 +53,9 @@ def main():
     # Loading and normalization of test dataset
     try:
         df = pd.read_csv(argv[1])
-        df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], 1)
+        df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], axis=1)
         df_num = df.select_dtypes(include=[np.number])
-        df_num = (df_num - df_num.mean()) / df_num.std()
+        df=(df-df.min())/(df.max()-df.min())
         df[df_num.columns] = df_num
     except:
         stderr.write('CSV parsing failed. Abort.')
