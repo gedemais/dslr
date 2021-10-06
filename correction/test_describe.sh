@@ -3,7 +3,7 @@
 # Shows the output of describe function
 echo "describe function output (scripts/describer/describer.py):"
 echo "-------------------------------------------------------------------------"
-python scripts/describer/describe.py datasets/dataset_train.csv
+python3.9 scripts/describer/describe.py datasets/dataset_train.csv
 echo "-------------------------------------------------------------------------"
 
 # Shows the functions used by describe function in python source file

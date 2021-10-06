@@ -68,7 +68,9 @@ def plot_histograms(df):
         axs[x][y].set_title(matiere)
         for house in houses:
             axs[x][y].hist( matieres[matiere][house],
-                            bins=30, alpha=0.75, color=houses_colors[house])
+                            bins=30,
+                            alpha=0.75,
+                            color=houses_colors[house])
 
     axs[1][hists_matrix_width - 1].axis("off")
     axs[2][hists_matrix_width - 1].axis("off")
@@ -82,7 +84,7 @@ def main():
 
     try:
         df = pd.read_csv(argv[1])
-        df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], 1)
+        df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], axis=1)
     except:
         print("csv parsing failed. Abort.")
         exit(1)

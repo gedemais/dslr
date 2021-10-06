@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # Launches the histogram script
-python scripts/histogram/histogram.py datasets/dataset_train.csv
+python3.9 scripts/histogram/histogram.py datasets/dataset_train.csv
