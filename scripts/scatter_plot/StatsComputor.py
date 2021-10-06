@@ -53,9 +53,9 @@ class StatsComputor():
             s.append(i)
         s.sort()
 
-        self.tf_pct = s[math.ceil(self.count / 4.0) - 1]
-        self.fifty_pct = s[math.ceil(self.count / 2.0) - 1]
-        self.sf_pct = s[math.ceil(3 * self.count / 4.0) - 1]
+        self.tf_pct = s[int(math.ceil(self.count / 4.0)) - 1]
+        self.fifty_pct = s[int(math.ceil(self.count / 2.0)) - 1]
+        self.sf_pct = s[int(math.ceil(3 * self.count / 4.0)) - 1]
 
         return {"count": self.count,
                 "mean": self.mean,
