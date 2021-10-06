@@ -81,6 +81,8 @@ def plot_scatter(sc, a_key, b_key):
         and y axis data.
     """
     plt.scatter(x=sc.df[a_key], y=sc.df[b_key], c='red', s=4)
+    plt.xlabel(a_key)
+    plt.ylabel(b_key)
     plt.show()
 
 
@@ -92,6 +94,7 @@ def main():
     sc = StatsComputor(argv[1])
     similaritys = get_similaritys(sc)
     matiere_a, matiere_b = get_highest_similarity(similaritys)
+    # Test with wrong value to show "usual" dispersion
     #matiere_a, matiere_b = "Flying", "Charms"
     plot_scatter(sc, matiere_a, matiere_b)
 
