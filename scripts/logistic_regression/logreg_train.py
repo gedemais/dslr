@@ -6,9 +6,9 @@ import os
 
 # Something to iterate over...
 models =    {
-                "Gryffindor": LRModel(13, "Gryffindor", 13.2),
-                "Hufflepuff": LRModel(13, "Hufflepuff", 15.01),
-                "Ravenclaw": LRModel(13, "Ravenclaw", 20.01),
+                "Gryffindor": LRModel(13, "Gryffindor", max_error=13.4, learning_rate=0.015),
+                "Hufflepuff": LRModel(13, "Hufflepuff", max_error=16.5, learning_rate=0.04), 
+                "Ravenclaw": LRModel(13, "Ravenclaw", max_error=19.15, learning_rate=0.04),
             }
 
 # Weights storage
@@ -55,7 +55,8 @@ def main():
         df = pd.read_csv(argv[1])
         df = df.drop(["Index", "First Name", "Last Name", "Birthday", "Best Hand"], axis=1)
         df_num = df.select_dtypes(include=[np.number])
-        df=(df-df.min())/(df.max()-df.min())
+        for column in df_num.columns:
+            df_num[column] = df_num[column] / df_num[column].abs().max()
         df[df_num.columns] = df_num
     except:
         stderr.write('CSV parsing failed. Abort.')

@@ -93,7 +93,8 @@ def main():
     try:
         df = pd.read_csv(argv[1])
         df_num = df.select_dtypes(include=[np.number])
-        df_num = (df_num - df_num.mean()) / df_num.std()
+        for column in df_num.columns:
+            df_num[column] = df_num[column] / df_num[column].abs().max()
         df[df_num.columns] = df_num
     except:
         stderr.write('CSV parsing failed. Abort.')

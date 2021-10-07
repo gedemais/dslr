@@ -22,9 +22,7 @@ class   LRModel():
                         "Flying"
                     ]
 
-    __learning_rate = 0.04
-
-    def __init__(self, n_input, target, max_error=19.0, weights_path=""):
+    def __init__(self, n_input, target, max_error=19.0, learning_rate=0.005, weights_path=""):
         try:
             if weights_path == "":
                 self.weights = [0.0 for x in range(n_input)]
@@ -32,12 +30,13 @@ class   LRModel():
             else:
                 self.weights, self.bias = self.__parse_weights(weights_path)
 
+            self.learning_rate = learning_rate
             self.max_error = max_error
             self.target = target
             self.output = 0.0
             self.n_input = n_input
         except:
-            stderr.write('Failed to create linear regression model: invalid input/output size\n')
+            stderr.write('Failed to create linear regression model\n')
             exit(1)
 
 
@@ -104,13 +103,13 @@ class   LRModel():
             for i, grade in enumerate(student):
                 updates[i] *= -2.0
 
-            self.bias -= self.__learning_rate * bias_update
+            self.bias -= self.learning_rate * bias_update
             for i, grade in enumerate(student):
-                self.weights[i] -= self.__learning_rate * updates[i]
+                self.weights[i] -= self.learning_rate * updates[i]
 
             #
             delta = prev_error - error
-            stdout.write(   'Error = {0} | Delta = {1} | Epoch {2}           \r'
+            stdout.write(   'Error = {0} | Delta = {1} | Epoch {2}                                                \r'
                             .format(error, delta, epoch))
             stdout.flush()
             prev_error = error
