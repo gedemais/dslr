@@ -4,7 +4,7 @@
 echo "TRAINING SCRIPT"
 echo "---------------------------------------------------"
 
-#python3.9 scripts/logistic_regression/logreg_train.py datasets/dataset_train.csv
+python3.9 scripts/logistic_regression/logreg_train.py datasets/dataset_train.csv
 
 echo "---------------------------------------------------"
 
